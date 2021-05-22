@@ -3,6 +3,12 @@ const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
+const secret='mystrongjwt';
+const createToken = (user) => {
+	return jwt.sign({ user }, secret, {
+		expiresIn: '1d',
+	});
+};
 module.exports.updateName = async (req, res) => {
 	const { name, id } = req.body;
 	if (name === '') {
@@ -14,7 +20,7 @@ module.exports.updateName = async (req, res) => {
 				{ name: name },
 				{ new: true }
 			);
-			const token = jwt.sign({ user }, process.env.SECRET, {
+			const token = jwt.sign({ user }, createToken, {
 				expiresIn: '7d',
 			});
 			return res.status(200).json({ token, msg: 'Your name has been updated' });
