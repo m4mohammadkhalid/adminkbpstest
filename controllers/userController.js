@@ -3,10 +3,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const User = require('../models/User');
-const secret='mystrongjwt';
 const createToken = (user) => {
-	return jwt.sign({ user }, secret, {
-		expiresIn: '1d',
+	return jwt.sign({ user }, process.env.JWT_KEY, {
+		expiresIn: '7d',
 	});
 };
 module.exports.registerValiations = [
@@ -39,7 +38,9 @@ module.exports.register = async (req, res) => {
 				password: hash,
 			});
 			const token = createToken(user);
-			return res.status(200).json({ msg: 'Your account has been created', token });
+			return res
+				.status(200)
+				.json({ msg: 'Your account has been created', token });
 		} catch (error) {
 			return res.status(500).json({ errors: error });
 		}
